@@ -16,6 +16,9 @@ namespace Landscape2.Runtime
         // 建物が選択されたときのイベント関数
         public event Action<GameObject, bool> OnBuildingSelected = (targetObject, canEdit) => { };
 
+        private GameObject copyingBuilding = null;
+        private bool isCopying = false;
+
         private GameObject targetObject;
         private GameObject highlightBox = null;
         private VisualElement uiRoot;
@@ -50,6 +53,12 @@ namespace Landscape2.Runtime
             // 建物編集画面時の処理
             if (uiRoot.style.display == DisplayStyle.Flex)
             {
+                if (isCopying)
+                {
+                    UpdateCopyingBuilding();
+                    return;
+                }
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     var cbg = panelList.Where(x => x.name == UISelectDeleteButton).FirstOrDefault();
@@ -134,12 +143,58 @@ namespace Landscape2.Runtime
         public void Start()
         {
         }
+    public void StartCopyBuilding(GameObject building)
+    {
+        isCopying = true;
+    }
+
+    private void UpdateCopyingBuilding()
+    {
+        if (!isCopying) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit = new RaycastHit();
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            BuildingCopyManager.UpdateCopyPosition(hit.point);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                bool isOverUI = false;
+                foreach (var panel in panelList)
+                {
+                    var panelBound = panel.worldBound;
+                    panelBound.position = new Vector2(panelBound.position.x, Screen.height - panelBound.position.y - panelBound.size.y);
+                    if (panelBound.Contains(Input.mousePosition))
+                    {
+                        isOverUI = true;
+                        break;
+                    }
+                }
+
+                if (!isOverUI)
+                {
+                    PlaceCopyingBuilding(hit.point);
+                }
+            }
+        }
+    }
+
+    private void PlaceCopyingBuilding(Vector3 position)
+    {
+        BuildingCopyManager.PlaceCopy(position);
+        isCopying = false;
+    }
+
         public void OnEnable()
         {
         }
         public void OnDisable()
         {
             targetObject = null;
+            isCopying = false;
+            BuildingCopyManager.CancelCopying();
 
             if (highlightBox)
             {
