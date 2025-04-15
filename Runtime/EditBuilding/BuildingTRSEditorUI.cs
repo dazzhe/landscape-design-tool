@@ -18,6 +18,8 @@ namespace Landscape2.Runtime
         string scaleButtonName = "ScaleButton";
 
         string deleteButtonName = "ContextButton";
+        string copyButtonName = "CopyButton";
+
 
         string succeedButtonName = "Button";
 
