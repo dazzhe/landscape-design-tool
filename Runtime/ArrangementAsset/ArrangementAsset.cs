@@ -52,6 +52,7 @@ namespace Landscape2.Runtime
         private EditMode editMode;
 
         private GameObject activeTarget; // editTargetはactiveTargetにしてもいいかも知れない
+    private ArrangementAssetEditUI assetEditUI;
 
         public ArrangementAsset(VisualElement element, SaveSystem saveSystemInstance, LandscapeCamera landscapeCamera)
         {
@@ -238,6 +239,7 @@ namespace Landscape2.Runtime
                     arrangementAssetUIClass.SetEditTarget(editTarget);
                     SetMode(ArrangeModeName.Edit);
                     editMode.CreateRuntimeHandle(editTarget, TransformType.Position);
+                    assetEditUI.SetTarget(editTarget);
                     
                     // ハンドルが表示されたらプロジェクトが編集中として扱う
                     ProjectSaveDataManager.Edit(ProjectSaveDataType.Asset, editTarget.GetInstanceID().ToString());
