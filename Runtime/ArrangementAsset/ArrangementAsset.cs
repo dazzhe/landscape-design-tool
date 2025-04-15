@@ -152,7 +152,6 @@ namespace Landscape2.Runtime
                 assetEditUI.OnClickDeleteButton = () => {
                     editMode.DeleteAsset(editTarget);
                     SetMode(ArrangeModeName.Normal);
-                    arrangementAssetUIClass.DeleteAsset();
                 };
                 return;
             }
