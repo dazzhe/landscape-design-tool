@@ -26,6 +26,8 @@ namespace Landscape2.Runtime
             deleteListUI = new(element, this);
             copyListUI = new(element, this);
 
+            // Subscribe to the OnBuildingPlaced event
+            BuildingCopyManager.OnBuildingPlaced += OnBuildingPlaced;
 
             var assetFocus = new GameObjectFocus(landscapeCamera);
             assetFocus.focusFinishCallback += _ => assetFocus.FocusFinish();
@@ -148,6 +150,9 @@ namespace Landscape2.Runtime
             deleteListUI?.OnDisable();
             copyListUI?.OnDisable();
 
+            // Unsubscribe from the OnBuildingPlaced event
+            BuildingCopyManager.OnBuildingPlaced -= OnBuildingPlaced;
+
             target = null;
         }
 
@@ -177,10 +182,21 @@ namespace Landscape2.Runtime
             deleteListUI?.Start();
             copyListUI?.Start();
 
+            // Initialize the copy list with any existing copied buildings
+            foreach (var building in BuildingCopyManager.GetCopiedBuildings())
+            {
+                copyListUI?.AppendList(building);
+            }
         }
 
         public void LateUpdate(float deltaTime)
         {
+        }
+
+        private void OnBuildingPlaced(GameObject placedBuilding)
+        {
+            // Add the placed building to the copy list UI
+            copyListUI?.AppendList(placedBuilding);
         }
 
         private void OnLoadBuildings()

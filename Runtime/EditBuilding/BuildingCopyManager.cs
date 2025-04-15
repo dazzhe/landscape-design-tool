@@ -1,3 +1,5 @@
+using Landscape2.Runtime.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,9 +13,12 @@ namespace Landscape2.Runtime.BuildingEditor
         private static GameObject copyingBuilding;
         private static bool isFollowingCursor = false;
 
+        public static event Action<GameObject> OnBuildingPlaced;
+
         public static void AddCopiedBuilding(GameObject building)
         {
             copiedBuildings.Add(building);
+            OnBuildingPlaced?.Invoke(building);
         }
 
         public static List<GameObject> GetCopiedBuildings()
@@ -34,6 +39,8 @@ namespace Landscape2.Runtime.BuildingEditor
             copyingBuilding = GameObject.Instantiate(building);
             copyingBuilding.name = building.name;
             
+            LayerMaskUtil.SetIgnore(copyingBuilding, false);
+            
             isFollowingCursor = true;
             
             MakeTransparent(copyingBuilding, 0.5f);
@@ -44,6 +51,10 @@ namespace Landscape2.Runtime.BuildingEditor
             if (!isFollowingCursor || copyingBuilding == null) return;
 
             copyingBuilding.transform.position = position;
+            
+            LayerMaskUtil.SetIgnore(copyingBuilding, false);
+            
+            BuildingTRSEditingComponent.TryGetOrCreate(copyingBuilding);
             
             MakeTransparent(copyingBuilding, 1.0f);
             
