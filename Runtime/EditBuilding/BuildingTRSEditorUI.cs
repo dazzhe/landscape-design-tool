@@ -18,6 +18,8 @@ namespace Landscape2.Runtime
         string scaleButtonName = "ScaleButton";
 
         string deleteButtonName = "ContextButton";
+        string copyButtonName = "CopyButton";
+
 
         string succeedButtonName = "Button";
 
@@ -47,6 +49,11 @@ namespace Landscape2.Runtime
         {
             get; set;
         }
+    public System.Action OnClickCopyButton
+    {
+        get; set;
+    }
+
 
         public BuildingTRSEditorUI(EditBuilding editBuilding, VisualElement element)
         {
@@ -74,6 +81,12 @@ namespace Landscape2.Runtime
             {
                 OnClickDeleteButton?.Invoke();
             };
+            var copyButton = uiElement.Q<Button>(copyButtonName);
+            copyButton.clicked += () =>
+            {
+                OnClickCopyButton?.Invoke();
+            };
+
 
             // 不要なUIを非表示にしておく
             var succeedButton = uiElement.Q<Button>("");

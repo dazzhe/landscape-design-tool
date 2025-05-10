@@ -15,6 +15,8 @@ namespace Landscape2.Runtime
 
         BuildingTRSEditorUI trsUI;
         BuildingDeleteListUI deleteListUI;
+        BuildingCopyListUI copyListUI;
+
         GameObject target;
 
         public BuildingTRSEditor(EditBuilding editBuilding, VisualElement element, LandscapeCamera landscapeCamera)
@@ -22,6 +24,10 @@ namespace Landscape2.Runtime
             editMode.OnCancel();
             trsUI = new(editBuilding, element);
             deleteListUI = new(element, this);
+            copyListUI = new(element, this);
+
+            // Subscribe to the OnBuildingPlaced event
+            BuildingCopyManager.OnBuildingPlaced += OnBuildingPlaced;
 
             var assetFocus = new GameObjectFocus(landscapeCamera);
             assetFocus.focusFinishCallback += _ => assetFocus.FocusFinish();
@@ -92,6 +98,19 @@ namespace Landscape2.Runtime
             {
                 ChangeEditMode(target, TransformType.Rotation);
             };
+            trsUI.OnClickCopyButton += () =>
+            {
+                if (target == null)
+                {
+                    Debug.LogWarning($"targetがないです");
+                    return;
+                }
+
+                BuildingCopyManager.StartCopying(target);
+                
+                editBuilding.StartCopyBuilding(target);
+            };
+
             trsUI.OnClickScaleButton += () =>
             {
                 ChangeEditMode(target, TransformType.Scale);
@@ -129,6 +148,11 @@ namespace Landscape2.Runtime
         {
             trsUI?.OnDisable();
             deleteListUI?.OnDisable();
+            copyListUI?.OnDisable();
+
+            // Unsubscribe from the OnBuildingPlaced event
+            BuildingCopyManager.OnBuildingPlaced -= OnBuildingPlaced;
+
             target = null;
         }
 
@@ -136,6 +160,8 @@ namespace Landscape2.Runtime
         {
             trsUI?.OnEnable();
             deleteListUI?.OnEnable();
+            copyListUI?.OnEnable();
+
         }
 
         public void Update(float deltaTime)
@@ -144,16 +170,33 @@ namespace Landscape2.Runtime
             
             deleteListUI?.ShowListEmpty(
                 BuildingsDataComponent.GetDeleteBuildings().Count <= 0);
+            
+            copyListUI?.ShowListEmpty(
+                BuildingCopyManager.GetCopiedBuildings().Count <= 0);
+
         }
 
         public void Start()
         {
             trsUI?.Start();
             deleteListUI?.Start();
+            copyListUI?.Start();
+
+            // Initialize the copy list with any existing copied buildings
+            foreach (var building in BuildingCopyManager.GetCopiedBuildings())
+            {
+                copyListUI?.AppendList(building);
+            }
         }
 
         public void LateUpdate(float deltaTime)
         {
+        }
+
+        private void OnBuildingPlaced(GameObject placedBuilding)
+        {
+            // Add the placed building to the copy list UI
+            copyListUI?.AppendList(placedBuilding);
         }
 
         private void OnLoadBuildings()

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.synesthesias.landscape-design-tool-2/Runtime/UICommon/UIStyleCommon.uss?fileID=7433441132597879392&amp;guid=5003ef441f4ce7e4881f663b95f4df1d&amp;type=3#UIStyleCommon" />
+    <ui:VisualElement name="Panel_CopiedBuilding" style="flex-grow: 0; flex-shrink: 0; background-color: rgba(0, 0, 0, 0.57); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding-top: 16px; padding-right: 16px; padding-bottom: 16px; padding-left: 16px; min-width: 240px; max-width: 320px; max-height: 320px; min-height: 120px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: flex-start;">
+        <ui:Label tabindex="-1" text="コピーした建物一覧" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 0; margin-right: 0; margin-bottom: 16px; margin-left: 0; -unity-font-style: bold; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+        <ui:Label tabindex="-1" text="コピーした建物はありません" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Dialogue" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: center; justify-content: center; flex-grow: 1; align-self: center; -unity-text-align: middle-center;" />
+        <ui:ScrollView name="ScrollView" style="flex-grow: 1; width: 100%; min-height: 120px; max-height: 240px;">
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>
